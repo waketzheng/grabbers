@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "grabbers"
+version = "0.1.0"
+description = ""
+authors = ["Waket Zheng <waketzheng@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+sanic = "^23.12.1"
+orjson = "^3.9.14"
+httpx = "^0.26.0"
+gunicorn = "^21.2.0"
+uvicorn = {extras = ["standard"], version = "^0.27.1"}
+loguru = "^0.7.2"
+
+
+[tool.poetry.group.dev.dependencies]
+fast-tort-cli = {extras = ["all"], python = "^3.11", version = "^0.5.2"}
+httpie = "^3.2.2"
+sanic-testing = "^23.12.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.coverage.report]
+ignore_errors = true
