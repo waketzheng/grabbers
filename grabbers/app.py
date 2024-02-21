@@ -9,6 +9,10 @@ from sanic import Sanic, raw
 app = Sanic("Jumper", dumps=dumps, loads=loads)
 
 
+class Cache:
+    last_domain = ""
+
+
 @app.route("", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
 async def index(request):
     return raw(b"Welcome. Example>> http :8000/http.127.0.0.1:9000/home")
@@ -25,6 +29,10 @@ async def handler(request, full: str):
         domain, url = host.split("/", 1)
     except ValueError:
         domain = host
+    else:
+        if "." not in domain:
+            domain = Cache.last_domain
+            url = host
     base_url = scheme + "://" + domain
     target_path = url
     if qs := request.query_string:
@@ -41,6 +49,8 @@ async def handler(request, full: str):
         r = await client.request(method, target_path, content=body)
         if r.status_code == 302 and (next_url := r.headers.get("location")):
             r = await client.request(method, next_url, content=body)
+    if r.status_code < 300:
+        Cache.last_domain = domain
     for key in r.headers:
         if key.lower() == "content-type":
             headers = {key: r.headers.get(key)}

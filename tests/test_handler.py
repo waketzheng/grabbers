@@ -41,3 +41,7 @@ def test_get(client):
     request, response = client.get("/https://news.qq.com/ch/auto/")
     assert response.status == 200
     assert "//i.news.qq.com" in response.text
+
+    request, response = client.get("/ch/auto/")
+    assert response.status == 200
+    assert "//i.news.qq.com" in response.text
