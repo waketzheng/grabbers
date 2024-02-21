@@ -41,6 +41,10 @@ async def handler(request, full: str):
         r = await client.request(method, target_path, content=body)
         if r.status_code == 302 and (next_url := r.headers.get("location")):
             r = await client.request(method, next_url, content=body)
+    for key in r.headers:
+        if key.lower() == "content-type":
+            headers = {key: r.headers.get(key)}
+            return raw(r.content, status=r.status_code, headers=headers)
     return raw(r.content, status=r.status_code)
 
 
