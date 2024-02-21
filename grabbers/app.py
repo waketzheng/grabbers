@@ -31,7 +31,7 @@ async def handler(request, full: str):
         domain = host
     else:
         if "." not in domain:
-            domain = Cache.last_domain
+            domain = Cache.last_domain or "github.com"
             url = host
     base_url = scheme + "://" + domain
     target_path = url
@@ -49,7 +49,7 @@ async def handler(request, full: str):
         r = await client.request(method, target_path, content=body)
         if r.status_code == 302 and (next_url := r.headers.get("location")):
             r = await client.request(method, next_url, content=body)
-    if r.status_code < 300:
+    if r.status_code < 300 and domain:
         Cache.last_domain = domain
     for key in r.headers:
         if key.lower() == "content-type":
